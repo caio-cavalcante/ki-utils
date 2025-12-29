@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
 import { journalService, type JournalEntry } from "./services/journalService";
+import JournalForm from "./JournalForm";
 
 const App = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [entries, setEntries] = useState<JournalEntry[]>([]);
 
-    useEffect(() => {
-        const fetchEntries = async () => {
-            try {
-                const response = journalService.getAll();
-                setEntries(await response);
-                setLoading(false);
-            } catch (error) {
-                setError((error as Error).message);
-                setLoading(false);
-            }
-        };
+    const fetchEntries = async () => {
+        try {
+            const response = await journalService.getAll();
+            setEntries(response);
+            setLoading(false);
+        } catch (error) {
+            setError((error as Error).message);
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchEntries();
     }, []);
 
@@ -25,9 +26,10 @@ const App = () => {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="App">
-            <h1>Journal Entries</h1>
-            <div>
+        <div className="mx-auto">
+            <h1 className="text-3xl font-bold m-4">Journal Entries</h1>
+            <JournalForm onEntryCreated={fetchEntries} />
+            <div className="flex flex-wrap">
                 {Object.entries(
                     entries.reduce(
                         (acc, entry) => {
@@ -39,7 +41,7 @@ const App = () => {
                         {} as Record<string, JournalEntry[]>
                     )
                 ).map(([date, entries]) => (
-                    <div key={date} className="p-4 m-4">
+                    <div key={date} className="p-4 m-4 w-1/3">
                         <fieldset className="p-4 border border-gray-400 rounded-lg">
                             <legend>{date}</legend>
                             {entries.map((entry) => (
@@ -58,3 +60,4 @@ const App = () => {
 }
 
 export default App;
+
