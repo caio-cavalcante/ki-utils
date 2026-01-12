@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
         });
 
         res.status(201).json(newJournalEntry)
-    } catch (error: any) {
+    } catch (error: string | any) {
         console.error(error);
         res.status(500).json({ message: error.message || "Internal Server Error"});
     }
@@ -46,5 +46,44 @@ router.get('/', async (req, res) => {
         res.status(500).json({ message: error.message || "Internal Server Error" });
     }
 });
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await prisma.journalEntry.delete({
+            where: {
+                id,
+            },
+        })
+
+        res.status(200).json({ message: "Journal entry deleted successfully" });
+    } catch (error: string | any) {
+        console.error(error);
+        res.status(500).json({ message: error.message || "Internal Server Error" });
+    }
+})
+
+router.patch('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { content, mood } = req.body;
+
+        await prisma.journalEntry.update({
+            where: {
+                id,
+            },
+            data: {
+                content,
+                mood,
+            },
+        })
+
+        res.status(200).json({ message: "Journal entry updated successfully" });
+    } catch (error: string | any) {
+        console.error(error);
+        res.status(500).json({ message: error.message || "Internal Server Error" });
+    }
+})
 
 export default router;
