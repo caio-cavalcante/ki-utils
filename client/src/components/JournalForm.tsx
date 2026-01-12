@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { journalService } from "../services/journalService";
-
 interface JournalFormProps {
     content: string;
     mood: string;
