@@ -2,6 +2,7 @@ export interface JournalEntry {
     id: string;
     content: string;
     mood: string;
+    date: string;
     createdAt: string;
 }
 
@@ -18,11 +19,11 @@ export const journalService = {
         return await response.json();
     },
 
-    create: async (content: string, mood: string): Promise<JournalEntry> => {
+    create: async (content: string, mood: string, date: string): Promise<JournalEntry> => {
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content, mood }),
+            body: JSON.stringify({ content, mood, date }),
         });
 
         if (!response.ok) {
@@ -37,11 +38,11 @@ export const journalService = {
         if (!response.ok) throw new Error("Failed to delete journal entry");
     },
 
-    update: async (id: string, content: string, mood: string) => {
+    update: async (id: string, content: string, mood: string, date: string) => {
         const response = await fetch(`${API_URL}/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content, mood }),
+            body: JSON.stringify({ content, mood, date }),
         });
 
         if (!response.ok) throw new Error("Failed to update journal entry");

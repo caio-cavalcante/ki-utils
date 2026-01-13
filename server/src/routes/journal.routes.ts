@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     try {
-        const { content, mood } = req.body;
+        const { content, mood, date } = req.body;
 
         if (!content) {
             res.status(400).json({ message: "Content is required" });
@@ -22,6 +22,7 @@ router.post('/', async (req, res) => {
             data: {
                 content,
                 mood,
+                date,
             },
         });
 
@@ -67,7 +68,7 @@ router.delete('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { content, mood } = req.body;
+        const { content, mood, date } = req.body;
 
         await prisma.journalEntry.update({
             where: {
@@ -76,6 +77,7 @@ router.patch('/:id', async (req, res) => {
             data: {
                 content,
                 mood,
+                date,
             },
         })
 
