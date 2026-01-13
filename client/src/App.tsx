@@ -116,7 +116,7 @@ const App = () => {
                             <p className="text-sm font-medium">
                                 Date:{" "}
                                 <span className="font-normal">
-                                    {entry.date}
+                                    {new Date(entry.date).toLocaleDateString('pt-BR')}
                                 </span>
                             </p>
                             <p className="text-sm font-medium">
