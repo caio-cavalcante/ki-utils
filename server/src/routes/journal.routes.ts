@@ -13,8 +13,8 @@ router.post('/', async (req, res) => {
     try {
         const { content, mood, date } = req.body;
 
-        if (!content) {
-            res.status(400).json({ message: "Content is required" });
+        if (!content || !mood || !date) {
+            res.status(400).json({ message: "Missing required fields" });
             return;
         }
 
