@@ -1,8 +1,10 @@
 interface JournalFormProps {
     content: string;
     mood: string;
+    date: string;
     setContent: (value: string) => void;
     setMood: (value: string) => void;
+    setDate: (value: string) => void;
     onSubmit: (e: React.FormEvent) => void;
     isEditing: boolean; // Para mudar o texto do botão
     onCancelEdit: () => void; // Para cancelar a edição
@@ -11,22 +13,36 @@ interface JournalFormProps {
 const JournalForm = ({
     content,
     mood,
+    date,
     setContent,
     setMood,
+    setDate,
     onSubmit,
     isEditing,
     onCancelEdit,
 }: JournalFormProps) => {
     return (
-        <div className="bg-gray-200 dark:bg-gray-900 m-4 p-4 rounded-lg w-[60%]">
-            <form onSubmit={onSubmit} className="flex items-center gap-3">
+        <div className="bg-gray-200 dark:bg-gray-900 m-auto p-4 rounded-lg w-full">
+            <form
+                onSubmit={onSubmit}
+                className="flex flex-col gap-3 sm:flex-row sm:items-center"
+            >
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="bg-gray-300 dark:bg-gray-700 rounded-lg px-3 py-2 w-full sm:w-[20%]"
+                />
+
                 <textarea
                     name="content"
                     id="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="What did you do?"
-                    className="flex-1 resize-none rounded-md bg-gray-300 dark:bg-gray-700 rounded-lg px-3 py-2 w-[40%]"
+                    className="flex-1 resize-none rounded-md bg-gray-300 dark:bg-gray-700 rounded-lg px-3 py-2 w-full sm:w-[40%]"
                     rows={1}
                 />
 
@@ -35,7 +51,7 @@ const JournalForm = ({
                     id="mood"
                     value={mood}
                     onChange={(e) => setMood(e.target.value)}
-                    className="bg-gray-300 dark:bg-gray-700 rounded-lg px-3 py-2 w-[25%]"
+                    className="bg-gray-300 dark:bg-gray-700 rounded-lg px-3 py-2 w-full sm:w-[25%]"
                 >
                     <option value="" disabled>
                         How did you feel?
@@ -91,7 +107,7 @@ const JournalForm = ({
 
                 <button
                     type="submit"
-                    className="bg-green-400 hover:bg-green-700 text-white font-bold px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer"
+                    className="bg-green-400 hover:bg-green-700 text-white font-bold px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full sm:w-auto"
                 >
                     {isEditing ? "Update" : "Add"}
                 </button>
@@ -100,7 +116,7 @@ const JournalForm = ({
                     <button
                         type="button"
                         onClick={onCancelEdit}
-                        className="bg-red-400 hover:bg-red-700 text-white font-bold px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer"
+                        className="bg-red-400 hover:bg-red-700 text-white font-bold px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full sm:w-auto"
                     >
                         Cancel
                     </button>

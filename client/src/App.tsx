@@ -4,21 +4,19 @@ import JournalForm from "./components/JournalForm";
 import { Trash2, Edit2 } from "lucide-react";
 
 const App = () => {
-    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [entries, setEntries] = useState<JournalEntry[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [content, setContent] = useState("");
     const [mood, setMood] = useState("");
+    const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
     const fetchEntries = async () => {
         try {
             const response = await journalService.getAll();
             setEntries(response);
-            setLoading(false);
         } catch (error) {
             setError((error as Error).message);
-            setLoading(false);
         }
     };
 
@@ -46,24 +44,29 @@ const App = () => {
 
         try {
             if (editingId) {
-                await journalService.update(editingId, content, mood);
+                await journalService.update(editingId, content, mood, date);
 
                 setEntries((entries) =>
                     entries.map((entry) =>
                         entry.id === editingId
-                            ? { ...entry, content, mood }
+                            ? { ...entry, content, mood, date }
                             : entry
                     )
                 );
 
                 setEditingId(null);
             } else {
-                const newEntry = await journalService.create(content, mood);
+                const newEntry = await journalService.create(
+                    content,
+                    mood,
+                    date
+                );
                 setEntries((entries) => [...entries, newEntry]);
             }
 
             setContent("");
             setMood("");
+            setDate(new Date().toISOString().split("T")[0]);
         } catch (error) {
             console.error(error);
             setError((error as Error).message);
@@ -96,11 +99,13 @@ const App = () => {
                 setContent={setContent}
                 mood={mood}
                 setMood={setMood}
+                date={date}
+                setDate={setDate}
                 onSubmit={handleSubmit}
                 isEditing={!!editingId}
                 onCancelEdit={handleCancelEdit}
             />
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 mt-4">
                 {entries.map((entry) => (
                     <div
                         key={entry.id}
@@ -108,6 +113,12 @@ const App = () => {
                     >
                         {/* Left side: text */}
                         <div className="space-y-1 text-slate-800">
+                            <p className="text-sm font-medium">
+                                Date:{" "}
+                                <span className="font-normal">
+                                    {entry.date}
+                                </span>
+                            </p>
                             <p className="text-sm font-medium">
                                 Content:{" "}
                                 <span className="font-normal">
@@ -125,9 +136,7 @@ const App = () => {
                         {/* Right side: icon buttons */}
                         <div className="flex items-center gap-2 text-slate-700">
                             <button
-                                onClick={() =>
-                                    handleDelete(entry.id)
-                                }
+                                onClick={() => handleDelete(entry.id)}
                                 className="rounded-md p-1.5 hover:bg-slate-200 cursor-pointer"
                                 aria-label="Delete entry"
                             >
